@@ -9,6 +9,7 @@ Docs: https://pubchem.ncbi.nlm.nih.gov/docs/pug-rest
 
 import json
 import os
+import time
 from pathlib import Path
 
 import duckdb
@@ -39,18 +40,22 @@ PROPERTIES = [
 # menthol, linalool, limonene, glucose, sucrose
 SEED_CIDS = [8468, 2519, 311, 54670067, 1548943, 16666, 6549, 440917, 5793, 5988]
 
+# PubChem PUG REST allows max 5 requests/sec per IP; exceeding it can
+# manifest as a dropped TCP connection (ECONNREFUSED), not a clean 503.
+REQUEST_INTERVAL_S = 0.25
+
 
 # ---------------------------------------------------------------------------
 # API client
 # ---------------------------------------------------------------------------
-@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=10))
+@retry(stop=stop_after_attempt(5), wait=wait_exponential(multiplier=1, min=2, max=30))
 def fetch_compound_properties(cids: list[int]) -> list[dict]:
     """Fetch properties for a batch of CIDs from PubChem."""
     cid_str = ",".join(str(c) for c in cids)
     prop_str = ",".join(PROPERTIES)
     url = f"{BASE_URL}/compound/cid/{cid_str}/property/{prop_str}/JSON"
 
-    with httpx.Client(timeout=30) as client:
+    with httpx.Client(timeout=30, trust_env=False) as client:
         response = client.get(url)
         response.raise_for_status()
 
@@ -58,12 +63,12 @@ def fetch_compound_properties(cids: list[int]) -> list[dict]:
     return data.get("PropertyTable", {}).get("Properties", [])
 
 
-@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=10))
+@retry(stop=stop_after_attempt(5), wait=wait_exponential(multiplier=1, min=2, max=30))
 def fetch_compound_synonyms(cid: int) -> list[str]:
     """Fetch top synonyms (common names) for a single CID."""
     url = f"{BASE_URL}/compound/cid/{cid}/synonyms/JSON"
 
-    with httpx.Client(timeout=30) as client:
+    with httpx.Client(timeout=30, trust_env=False) as client:
         response = client.get(url)
         if response.status_code == 404:
             return []
@@ -138,6 +143,7 @@ def run() -> None:
         cid = compound["CID"]
         compound["synonyms"] = fetch_compound_synonyms(cid)
         print(f"  cid={cid} synonyms={compound['synonyms'][:2]}")
+        time.sleep(REQUEST_INTERVAL_S)
 
     load_to_duckdb(properties)
     print("[pubchem] done.")

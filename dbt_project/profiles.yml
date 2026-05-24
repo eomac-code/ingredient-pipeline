@@ -3,5 +3,11 @@ ingredient_pipeline:
   outputs:
     dev:
       type: duckdb
-      path: "{{ env_var('DUCKDB_PATH', '../data/ingredient.duckdb') }}"
+      # No default: relative-path defaults create stray .duckdb files
+      # depending on CWD. Every dbt invocation (DAG or manual) must set
+      # DUCKDB_PATH to an absolute path. The Airflow DAG already does
+      # this; for manual local runs, e.g.:
+      #   DUCKDB_PATH=$(pwd)/data/ingredient.duckdb \
+      #     dbt run --project-dir dbt_project --profiles-dir dbt_project
+      path: "{{ env_var('DUCKDB_PATH') }}"
       threads: 4

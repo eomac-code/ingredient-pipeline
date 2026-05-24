@@ -13,8 +13,9 @@ dbt-duckdb==1.10.1
 great-expectations==0.18.19
 pandas==2.2.2
 
-# airflow (install separately via docker, listed here for reference)
-# apache-airflow==2.9.2
+# airflow providers (installed in Docker image)
+apache-airflow-providers-standard
+apache-airflow-providers-celery
 
 # dev / CI
 sqlfluff==3.0.7

@@ -99,7 +99,7 @@ ingredient-pipeline/
 │       └── ci.yml
 ├── docker-compose.yml            # Airflow stack
 ├── requirements.txt
-├── .env.example
+├── .env
 └── README.md
 ```
 

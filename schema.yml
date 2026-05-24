@@ -1,0 +1,83 @@
+version: 2
+
+# ---------------------------------------------------------------------------
+# Sources — raw DuckDB tables loaded by ingestion scripts
+# ---------------------------------------------------------------------------
+sources:
+  - name: raw
+    description: Raw tables loaded directly from PubChem and USDA APIs.
+    schema: main
+    tables:
+      - name: raw_compounds
+        description: Raw compound properties from PubChem PUG REST API.
+        columns:
+          - name: cid
+            description: PubChem Compound ID (primary key).
+            tests:
+              - not_null
+              - unique
+          - name: molecular_weight
+            description: Molecular weight in g/mol.
+            tests:
+              - not_null
+          - name: isomeric_smiles
+            description: SMILES notation encoding the molecular structure.
+
+      - name: raw_nutrition
+        description: Nutrient data from USDA FoodData Central.
+        columns:
+          - name: fdc_id
+            description: USDA FoodData Central ID (primary key).
+            tests:
+              - not_null
+              - unique
+
+# ---------------------------------------------------------------------------
+# Staging models
+# ---------------------------------------------------------------------------
+models:
+  - name: stg_compounds
+    description: >
+      Cleaned and typed PubChem compound data. One row per compound.
+      Preserves SMILES notation for cheminformatics compatibility (FAIR: Interoperable).
+    columns:
+      - name: compound_id
+        description: PubChem CID — surrogate key for this model.
+        tests:
+          - not_null
+          - unique
+      - name: molecular_weight_g_mol
+        description: Molecular weight in grams per mole.
+        tests:
+          - not_null
+      - name: smiles
+        description: Isomeric SMILES string. Encodes molecular structure.
+      - name: iupac_name
+        description: Systematic IUPAC chemical name, lowercased.
+      - name: xlogp
+        description: Computed octanol-water partition coefficient (lipophilicity).
+      - name: formal_charge
+        description: Net formal charge on the molecule.
+
+  - name: stg_nutrition
+    description: >
+      Cleaned and typed USDA FoodData Central nutrition records.
+      One row per food item. All nutrient values are per 100g.
+    columns:
+      - name: food_id
+        description: USDA FDC ID — surrogate key for this model.
+        tests:
+          - not_null
+          - unique
+      - name: food_description
+        description: USDA food item name, lowercased.
+        tests:
+          - not_null
+      - name: energy_kcal
+        description: Energy content in kilocalories per 100g.
+      - name: protein_g
+        description: Protein content in grams per 100g.
+      - name: fat_g
+        description: Total fat in grams per 100g.
+      - name: carbohydrate_g
+        description: Total carbohydrate in grams per 100g.

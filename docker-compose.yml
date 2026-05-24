@@ -1,6 +1,6 @@
 ---
 x-airflow-common: &airflow-common
-  image: apache/airflow:2.9.2
+  image: apache/airflow:3.0.0
   environment: &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: CeleryExecutor
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
@@ -9,9 +9,8 @@ x-airflow-common: &airflow-common
     AIRFLOW__CORE__FERNET_KEY: ''
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
-    AIRFLOW__API__AUTH_BACKENDS: 'airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session'
     AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: 'true'
-    _PIP_ADDITIONAL_REQUIREMENTS: "dbt-core dbt-duckdb httpx tenacity pandas"
+    _PIP_ADDITIONAL_REQUIREMENTS: "apache-airflow-providers-celery dbt-core==1.11.11 dbt-duckdb==1.10.1 duckdb==1.0.0 httpx tenacity pandas"
   volumes:
     - ./airflow/dags:/opt/airflow/dags
     - ./logs:/opt/airflow/logs
@@ -26,7 +25,7 @@ x-airflow-common: &airflow-common
 
 services:
   postgres:
-    image: postgres:13
+    image: postgres:16
     environment:
       POSTGRES_USER: airflow
       POSTGRES_PASSWORD: airflow

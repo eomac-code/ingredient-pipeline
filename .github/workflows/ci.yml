@@ -30,20 +30,24 @@ jobs:
           echo "GOOGLE_APPLICATION_CREDENTIALS=/tmp/gcp_keyfile.json" >> $GITHUB_ENV
 
       - name: SQLFluff lint
-        run: |
-          sqlfluff lint dbt_project/models \
-            --dialect bigquery \
-            --templater dbt \
-            --rules LT01,LT02,LT03,LT04,LT05,LT06,LT07,LT08
-        working-directory: .
-
-      - name: dbt deps
-        run: dbt deps
-        working-directory: dbt_project
-
-      - name: dbt compile
-        run: dbt compile --profiles-dir .
         working-directory: dbt_project
         env:
-          GCP_PROJECT: ${{ vars.GCP_PROJECT }}       
-          GCP_DATASET: ${{ vars.GCP_DATASET }}       
+          GCP_PROJECT: ${{ vars.GCP_PROJECT }}
+          GCP_DATASET: ${{ vars.GCP_DATASET }}
+        run: |
+          sqlfluff lint models \
+            --dialect bigquery \
+            --templater dbt \
+            --profiles-dir . \
+            --rules LT01,LT02,LT03,LT04,LT05,LT06,LT07,LT08
+
+      - name: dbt deps
+        working-directory: dbt_project
+        run: dbt deps
+
+      - name: dbt compile
+        working-directory: dbt_project
+        run: dbt compile --profiles-dir .
+        env:
+          GCP_PROJECT: ${{ vars.GCP_PROJECT }}
+          GCP_DATASET: ${{ vars.GCP_DATASET }}

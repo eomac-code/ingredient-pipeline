@@ -24,14 +24,12 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Write GCP keyfile from secret
+      - name: Write GCP keyfile
         env:
           GCP_KEYFILE: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
         run: |
           echo "$GCP_KEYFILE" > /tmp/gcp_keyfile.json
           echo "GOOGLE_APPLICATION_CREDENTIALS=/tmp/gcp_keyfile.json" >> $GITHUB_ENV
-          # verify it's valid JSON
-          python3 -c "import json; json.load(open('/tmp/gcp_keyfile.json')); print('keyfile JSON is valid')"
 
       - name: SQLFluff lint
         working-directory: dbt_project

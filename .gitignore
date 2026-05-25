@@ -218,14 +218,13 @@ __marimo__/
 .streamlit/secrets.toml
 
 logs/
-ingestion/data/
-data/ingredient.duckdb
+plugins/
 dbt_project/logs/
 dbt_project/target/
 dbt_project/dbt_packages/
 dbt_project/.dbt/
 dbt_project/.user.yml
-
+__pycache__/
 CLAUDE.md
 gcp_key/
 .DS_Store

@@ -3,17 +3,17 @@
 -- Matched on search_term ~ iupac_name or synonym.
 -- Materialised as ephemeral (inlined into marts, no table created).
 
-with compounds as (
-    select * from {{ ref('stg_compounds') }}
+WITH compounds AS (
+    SELECT * FROM {{ ref('stg_compounds') }}
 ),
 
-nutrition as (
-    select * from {{ ref('stg_nutrition') }}
+nutrition AS (
+    SELECT * FROM {{ ref('stg_nutrition') }}
 ),
 
 -- fuzzy join: match USDA search term against IUPAC name
-joined as (
-    select
+joined AS (
+    SELECT
         c.compound_id,
         c.iupac_name,
         c.molecular_formula,
@@ -25,7 +25,7 @@ joined as (
         c.hbond_acceptor_count,
         c.formal_charge,
         c.synonyms_json,
-        c.ingested_at                                   as compound_ingested_at,
+        c.ingested_at AS compound_ingested_at,
 
         n.food_id,
         n.food_description,
@@ -38,15 +38,16 @@ joined as (
         n.calcium_mg,
         n.iron_mg,
         n.vitamin_c_mg,
-        n.ingested_at                                   as nutrition_ingested_at,
+        n.ingested_at AS nutrition_ingested_at,
 
         -- flag: did we find a nutrition match?
-        case when n.food_id is not null then true else false end as has_nutrition_data
+        coalesce(n.food_id IS NOT null, false) AS has_nutrition_data
 
-    from compounds c
-    left join nutrition n
-        on c.iupac_name like '%' || n.search_term || '%'
-        or n.search_term like '%' || c.iupac_name || '%'
+    FROM compounds AS c
+    LEFT JOIN nutrition AS n
+        ON
+            c.iupac_name LIKE '%' || n.search_term || '%'
+            OR n.search_term LIKE '%' || c.iupac_name || '%'
 )
 
-select * from joined
+SELECT * FROM joined

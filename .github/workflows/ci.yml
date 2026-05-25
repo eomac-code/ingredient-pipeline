@@ -1,0 +1,84 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-and-compile:
+    name: Lint & dbt compile
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Write GCP keyfile
+        env:
+          GCP_KEYFILE: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+        run: |
+          echo "$GCP_KEYFILE" > /tmp/gcp_keyfile.json
+          echo "GOOGLE_APPLICATION_CREDENTIALS=/tmp/gcp_keyfile.json" >> $GITHUB_ENV
+
+      - name: SQLFluff lint
+        working-directory: dbt_project
+        run: sqlfluff lint models
+
+      - name: dbt deps
+        working-directory: dbt_project
+        run: dbt deps
+
+      - name: dbt compile
+        working-directory: dbt_project
+        env:
+          GCP_PROJECT: ${{ vars.GCP_PROJECT }}
+          GCP_DATASET: ${{ vars.GCP_DATASET }}
+        run: dbt compile --profiles-dir .
+
+  test:
+    name: dbt test
+    runs-on: ubuntu-latest
+    needs: lint-and-compile        # only runs if lint-and-compile passes
+    if: github.ref == 'refs/heads/main'   # only runs on main branch not PRs
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Write GCP keyfile
+        env:
+          GCP_KEYFILE: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+        run: |
+          echo "$GCP_KEYFILE" > /tmp/gcp_keyfile.json
+          echo "GOOGLE_APPLICATION_CREDENTIALS=/tmp/gcp_keyfile.json" >> $GITHUB_ENV
+
+      - name: dbt deps
+        working-directory: dbt_project
+        run: dbt deps
+
+      - name: dbt test
+        working-directory: dbt_project
+        env:
+          GCP_PROJECT: ${{ vars.GCP_PROJECT }}
+          GCP_DATASET: ${{ vars.GCP_DATASET }}
+        run: dbt test --profiles-dir .

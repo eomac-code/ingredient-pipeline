@@ -1,0 +1,51 @@
+version: 2
+
+# ---------------------------------------------------------------------------
+# Staging models
+# ---------------------------------------------------------------------------
+models:
+  - name: stg_compounds
+    description: >
+      Cleaned and typed PubChem compound data. One row per compound.
+      Preserves SMILES notation for cheminformatics compatibility (FAIR: Interoperable).
+    columns:
+      - name: compound_id
+        description: PubChem CID — surrogate key for this model.
+        tests:
+          - not_null
+          - unique
+      - name: molecular_weight_g_mol
+        description: Molecular weight in grams per mole.
+        tests:
+          - not_null
+      - name: smiles
+        description: Isomeric SMILES string. Encodes molecular structure.
+      - name: iupac_name
+        description: Systematic IUPAC chemical name.
+      - name: xlogp
+        description: Computed octanol-water partition coefficient (lipophilicity).
+      - name: formal_charge
+        description: Net formal charge on the molecule.
+
+  - name: stg_nutrition
+    description: >
+      Cleaned and typed USDA FoodData Central nutrition records.
+      One row per food item. All nutrient values are per 100g.
+    columns:
+      - name: food_id
+        description: USDA FDC ID — surrogate key for this model.
+        tests:
+          - not_null
+          - unique
+      - name: food_description
+        description: USDA food item name.
+        tests:
+          - not_null
+      - name: energy_kcal
+        description: Energy content in kilocalories per 100g.
+      - name: protein_g
+        description: Protein content in grams per 100g.
+      - name: fat_g
+        description: Total fat in grams per 100g.
+      - name: carbohydrate_g
+        description: Total carbohydrate in grams per 100g.

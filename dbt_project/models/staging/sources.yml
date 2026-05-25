@@ -1,0 +1,31 @@
+version: 2
+
+sources:
+  - name: ingredients
+    database: "{{ env_var('GCP_PROJECT') }}"
+    schema: "{{ env_var('GCP_DATASET') }}"
+    description: "Raw data ingested from PubChem and USDA APIs"
+    tables:
+      - name: raw_compounds
+        description: "Raw compound properties fetched from PubChem PUG REST API"
+        columns:
+          - name: cid
+            description: "PubChem Compound ID"
+            tests:
+              - not_null
+          - name: _loaded_at
+            description: "Timestamp when the record was loaded"
+            tests:
+              - not_null
+
+      - name: raw_nutrition
+        description: "Raw nutrition data fetched from USDA FoodData Central API"
+        columns:
+          - name: fdc_id
+            description: "USDA FoodData Central ID"
+            tests:
+              - not_null
+          - name: _loaded_at
+            description: "Timestamp when the record was loaded"
+            tests:
+              - not_null

@@ -1,0 +1,67 @@
+version: 2
+
+models:
+  - name: mart_ingredient_catalog
+    description: >
+      Final ingredient catalog combining PubChem chemical properties with
+      USDA nutritional data. One row per compound. Includes Lipinski and
+      polarity classifications. FAIR-compliant: each row includes a
+      pubchem_url for findability and full provenance timestamps.
+    config:
+      meta:
+        owner: data-engineering
+        domain: research-innovation
+        fair_findable: true
+        fair_accessible: true
+        fair_interoperable: true
+        fair_reusable: true
+    columns:
+      - name: compound_id
+        description: PubChem Compound ID. Primary key.
+        tests:
+          - not_null
+          - unique
+      - name: ingredient_name
+        description: IUPAC systematic name, lowercased.
+        tests:
+          - not_null
+      - name: molecular_formula
+        description: Chemical formula (e.g. C8H8O3 for vanillin).
+      - name: smiles
+        description: Isomeric SMILES string. Standard cheminformatics exchange format.
+      - name: inchi_key
+        description: Hashed InChI identifier. Globally unique, suitable for cross-database linking.
+      - name: molecular_weight_g_mol
+        description: Molecular weight in grams per mole.
+        tests:
+          - not_null
+      - name: xlogp
+        description: Computed octanol-water partition coefficient. Proxy for lipophilicity.
+      - name: lipinski_class
+        description: Rule of Five classification — drug_like or non_drug_like.
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['drug_like', 'non_drug_like']  
+      - name: polarity_class
+        description: Polarity category derived from xlogp.
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['hydrophilic', 'moderate', 'lipophilic', 'unknown']
+      - name: energy_kcal
+        description: Energy per 100g in kcal. Null if no USDA match.
+      - name: has_nutrition_data
+        description: Boolean — true if USDA nutrition data was joined for this ingredient.
+        tests:
+          - not_null
+      - name: has_smiles
+        description: Boolean — true if SMILES is present.
+      - name: pubchem_url
+        description: Direct URL to PubChem compound page. FAIR findability link.
+        tests:
+          - not_null
+      - name: dbt_updated_at
+        description: Timestamp of last dbt model run.
+        tests:
+          - not_null

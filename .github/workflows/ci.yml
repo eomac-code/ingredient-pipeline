@@ -34,12 +34,7 @@ jobs:
         env:
           GCP_PROJECT: ${{ vars.GCP_PROJECT }}
           GCP_DATASET: ${{ vars.GCP_DATASET }}
-        run: |
-          sqlfluff lint models \
-            --dialect bigquery \
-            --templater dbt \
-            --profiles-dir . \
-            --rules LT01,LT02,LT03,LT04,LT05,LT06,LT07,LT08
+        run: sqlfluff lint models
 
       - name: dbt deps
         working-directory: dbt_project

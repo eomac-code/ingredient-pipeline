@@ -41,7 +41,7 @@ joined AS (
         n.ingested_at AS nutrition_ingested_at,
 
         -- flag: did we find a nutrition match?
-        coalesce(n.food_id IS NOT null, false) AS has_nutrition_data
+        n.food_id IS NOT NULL AS has_nutrition_data
 
     FROM compounds AS c
     LEFT JOIN nutrition AS n

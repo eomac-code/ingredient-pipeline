@@ -21,18 +21,6 @@ DBT_PROJECT_DIR = PROJECT_ROOT / "dbt_project"
 PYTHON_BIN      = "/usr/local/bin/python3"
 DBT_BIN         = "/home/airflow/.local/bin/dbt"
 
-# Diagnostic preamble
-DIAGNOSTICS = r"""
-echo "=== DAG diagnostics ==="
-echo "host:        $(hostname)"
-echo "user:        $(id)"
-echo "python:      $(command -v python3) ($(python3 -V 2>&1))"
-echo "GCP_PROJECT: ${GCP_PROJECT:-<unset>}"
-echo "GCP_DATASET: ${GCP_DATASET:-<unset>}"
-echo "credentials: ${GOOGLE_APPLICATION_CREDENTIALS:-<unset>}"
-echo "keyfile exists: $(test -f ${GOOGLE_APPLICATION_CREDENTIALS} && echo YES || echo NO)"
-echo "=== end diagnostics ==="
-"""
 
 # ---------------------------------------------------------------------------
 # Default args
@@ -64,7 +52,6 @@ with DAG(
     ingest_pubchem = BashOperator(
         task_id="ingest_pubchem",
         bash_command=(
-            DIAGNOSTICS
             + f"\nset -x\ncd {PROJECT_ROOT} && {PYTHON_BIN} -u run.py --source pubchem"
         ),
     )
@@ -75,7 +62,6 @@ with DAG(
     ingest_usda = BashOperator(
         task_id="ingest_usda",
         bash_command=(
-            DIAGNOSTICS
             + f"\nset -x\ncd {PROJECT_ROOT} && {PYTHON_BIN} -u run.py --source usda"
         ),
     )

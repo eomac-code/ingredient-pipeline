@@ -42,8 +42,8 @@ jobs:
       - name: dbt compile
         working-directory: dbt_project
         env:
-          GCP_PROJECT: ${{ vars.GCP_PROJECT }}
-          GCP_DATASET: ${{ vars.GCP_DATASET }}
+          DBT_GCP_PROJECT: ${{ vars.DBT_GCP_PROJECT }}
+          DBT_GCP_DATASET: ${{ vars.DBT_GCP_DATASET }}
         run: dbt compile --profiles-dir .
 
   test:
@@ -79,6 +79,6 @@ jobs:
       - name: dbt test
         working-directory: dbt_project
         env:
-          GCP_PROJECT: ${{ vars.GCP_PROJECT }}
-          GCP_DATASET: ${{ vars.GCP_DATASET }}
+          DBT_GCP_PROJECT: ${{ vars.DBT_GCP_PROJECT }}
+          DBT_GCP_DATASET: ${{ vars.DBT_GCP_DATASET }}
         run: dbt test --profiles-dir .

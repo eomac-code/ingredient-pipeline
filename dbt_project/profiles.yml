@@ -6,7 +6,8 @@ ingredient_pipeline:
       method: service-account
       project: "{{ env_var('GCP_PROJECT') }}"
       dataset: "{{ env_var('GCP_DATASET') }}"
-      location: EU
       keyfile: "{{ env_var('GOOGLE_APPLICATION_CREDENTIALS') }}"
-      threads: 4  
+      threads: 4
       timeout_seconds: 300
+      location: EU
+      schema: "{{ env_var('GCP_DATASET') }}"

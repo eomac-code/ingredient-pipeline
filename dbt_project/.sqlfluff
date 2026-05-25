@@ -1,12 +1,8 @@
 [sqlfluff]
-templater = dbt
+templater = jinja
 dialect = bigquery
 runaway_limit = 10
 max_line_length = 120
-
-[sqlfluff:templater:dbt]
-project_dir = .
-profiles_dir = .
 
 [sqlfluff:rules:capitalisation.keywords]
 capitalisation_policy = upper

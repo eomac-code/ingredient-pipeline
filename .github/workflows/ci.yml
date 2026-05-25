@@ -22,7 +22,7 @@ jobs:
           cache: "pip"
 
       - name: Install dependencies
-        run: pip install -r requirements.txt sqlfluff-templater-dbt
+        run: pip install -r requirements.txt
 
       - name: Write GCP keyfile from secret
         run: |
@@ -31,9 +31,6 @@ jobs:
 
       - name: SQLFluff lint
         working-directory: dbt_project
-        env:
-          GCP_PROJECT: ${{ vars.GCP_PROJECT }}
-          GCP_DATASET: ${{ vars.GCP_DATASET }}
         run: sqlfluff lint models
 
       - name: dbt deps

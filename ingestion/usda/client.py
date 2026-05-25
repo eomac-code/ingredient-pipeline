@@ -7,10 +7,9 @@ Docs: https://fdc.nal.usda.gov/api-guide.html
 
 import httpx
 from tenacity import retry, stop_after_attempt, wait_exponential
-
 from ingestion.base_client import BaseClient
+from ingestion.config import USDA_BASE_URL
 
-BASE_URL = "https://api.nal.usda.gov/fdc/v1"
 
 NUTRIENT_MAP = {
     "1003": "protein_g",
@@ -49,7 +48,7 @@ class USDAClient(BaseClient):
     @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=10))
     def _search_food(self, term: str) -> dict | None:
         """Search for a food item and return the top Foundation/SR result."""
-        url = f"{BASE_URL}/foods/search"
+        url = f"{USDA_BASE_URL}/foods/search"
         params = {
             "api_key": self.api_key,
             "query": term,

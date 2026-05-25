@@ -22,6 +22,7 @@ from ingestion.pubchem.loader import make_compounds_loader
 from ingestion.usda.client import USDAClient
 from ingestion.usda.transformer import USDATransformer
 from ingestion.usda.loader import make_nutrition_loader
+from ingestion.config import PUBCHEM_CIDS, USDA_SEARCH_TERMS
 
 # ---------------------------------------------------------------------------
 # Config — all from environment variables
@@ -30,19 +31,6 @@ GCP_PROJECT = os.environ["GCP_PROJECT"]
 GCP_DATASET = os.environ["GCP_DATASET"]
 USDA_API_KEY = os.environ["USDA_API_KEY"]
 GOOGLE_CREDENTIALS = os.environ["GOOGLE_APPLICATION_CREDENTIALS"]
-
-print(f"[config] project      : {GCP_PROJECT}")
-print(f"[config] dataset      : {GCP_DATASET}")
-
-# Seed CIDs: vanillin, caffeine, citric acid, ascorbic acid, capsaicin,
-# menthol, linalool, limonene, glucose, sucrose
-PUBCHEM_CIDS = [8468, 2519, 311, 54670067, 1548943, 16666, 6549, 440917, 5793, 5988]
-
-USDA_SEARCH_TERMS = [
-    "vanilla extract", "citric acid", "caffeine", "capsicum pepper",
-    "menthol", "ascorbic acid", "glucose", "sucrose", "linalool", "limonene",
-]
-
 
 # ---------------------------------------------------------------------------
 # Pipeline runners

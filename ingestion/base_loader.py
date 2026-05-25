@@ -4,8 +4,6 @@ Any new destination (BigQuery, Snowflake, etc.) must implement this interface.
 """
 
 from abc import ABC, abstractmethod
-
-
 class BaseLoader(ABC):
 
     @abstractmethod

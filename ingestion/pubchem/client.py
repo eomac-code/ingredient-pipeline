@@ -6,13 +6,12 @@ Docs: https://pubchem.ncbi.nlm.nih.gov/docs/pug-rest
 """
 
 import time
-
 import httpx
 from tenacity import retry, stop_after_attempt, wait_exponential
-
 from ingestion.base_client import BaseClient
+from ingestion.config import PUBCHEM_REQUEST_INTERVAL_S as REQUEST_INTERVAL_S, PUBCHEM_BASE_URL
 
-BASE_URL = "https://pubchem.ncbi.nlm.nih.gov/rest/pug"
+BASE_URL = PUBCHEM_BASE_URL
 
 PROPERTIES = [
     "MolecularFormula",
@@ -25,10 +24,6 @@ PROPERTIES = [
     "HBondAcceptorCount",
     "Charge",
 ]
-
-# PubChem allows max 5 requests/sec — stay under to avoid dropped connections
-REQUEST_INTERVAL_S = 0.25
-
 
 class PubChemClient(BaseClient):
 

@@ -8,12 +8,8 @@ Deduplication happens in dbt staging models using QUALIFY + ROW_NUMBER.
 """
 
 import datetime
-
 from google.cloud import bigquery
-
 from ingestion.base_loader import BaseLoader
-
-
 class BigQueryLoader(BaseLoader):
 
     def __init__(

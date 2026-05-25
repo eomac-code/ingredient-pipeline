@@ -4,8 +4,6 @@ Every new API source must implement fetch().
 """
 
 from abc import ABC, abstractmethod
-
-
 class BaseClient(ABC):
 
     @abstractmethod

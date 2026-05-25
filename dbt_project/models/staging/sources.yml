@@ -2,8 +2,8 @@ version: 2
 
 sources:
   - name: ingredients
-    database: data-engineering-497409
-    schema: ingredients
+    database: "{{ env_var('GCP_PROJECT') }}"
+    schema: "{{ env_var('GCP_DATASET') }}"
     description: "Raw data ingested from PubChem and USDA APIs"
     tables:
       - name: raw_compounds

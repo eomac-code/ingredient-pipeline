@@ -35,11 +35,17 @@ jobs:
 
       - name: dbt deps
         working-directory: dbt_project
-        run: dbt deps
-
-      - name: dbt compile
-        working-directory: dbt_project
-        run: dbt compile --profiles-dir .
         env:
           GCP_PROJECT: ${{ vars.GCP_PROJECT }}
           GCP_DATASET: ${{ vars.GCP_DATASET }}
+        run: |
+          echo "profiles dir contents:"
+          cat profiles.yml
+          dbt deps --profiles-dir $(pwd)
+
+      - name: dbt compile
+        working-directory: dbt_project
+        env:
+          GCP_PROJECT: ${{ vars.GCP_PROJECT }}
+          GCP_DATASET: ${{ vars.GCP_DATASET }}
+        run: dbt compile --profiles-dir $(pwd)

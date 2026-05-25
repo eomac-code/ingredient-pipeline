@@ -27,8 +27,8 @@ from ingestion.config import PUBCHEM_CIDS, USDA_SEARCH_TERMS
 # ---------------------------------------------------------------------------
 # Config — all from environment variables
 # ---------------------------------------------------------------------------
-GCP_PROJECT = os.environ["GCP_PROJECT"]
-GCP_DATASET = os.environ["GCP_DATASET"]
+DBT_GCP_PROJECT = os.environ["DBT_GCP_PROJECT"]
+DBT_GCP_DATASET = os.environ["DBT_GCP_DATASET"]
 USDA_API_KEY = os.environ["USDA_API_KEY"]
 GOOGLE_CREDENTIALS = os.environ["GOOGLE_APPLICATION_CREDENTIALS"]
 
@@ -39,7 +39,7 @@ def run_pubchem() -> None:
     print("\n=== PubChem Pipeline ===")
     client      = PubChemClient()
     transformer = PubChemTransformer()
-    loader      = make_compounds_loader(GCP_PROJECT, GCP_DATASET)
+    loader      = make_compounds_loader(DBT_GCP_PROJECT, DBT_GCP_DATASET)
 
     raw     = client.fetch(PUBCHEM_CIDS)
     records = transformer.transform(raw)
@@ -51,7 +51,7 @@ def run_usda() -> None:
     print("\n=== USDA Pipeline ===")
     client      = USDAClient(api_key=USDA_API_KEY)
     transformer = USDATransformer()
-    loader      = make_nutrition_loader(GCP_PROJECT, GCP_DATASET)
+    loader      = make_nutrition_loader(DBT_GCP_PROJECT, DBT_GCP_DATASET)
 
     raw     = client.fetch(USDA_SEARCH_TERMS)
     records = transformer.transform(raw)

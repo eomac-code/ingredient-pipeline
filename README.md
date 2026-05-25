@@ -80,7 +80,7 @@ ingredient-pipeline/
 ├── run.py                              # single entry point for all ingestion
 ├── requirements.txt
 ├── docker-compose.yml
-├── .env                                # GCP_PROJECT, GCP_DATASET, USDA_API_KEY, GOOGLE_APPLICATION_CREDENTIALS
+├── .env                                # DBT_GCP_PROJECT, DBT_GCP_DATASET, USDA_API_KEY, GOOGLE_APPLICATION_CREDENTIALS
 │
 ├── ingestion/
 │   ├── base_client.py                  # abstract API client interface
@@ -152,8 +152,8 @@ cp .env.example .env
 
 Edit `.env`:
 ```
-GCP_PROJECT=your-gcp-project-id
-GCP_DATASET=ingredientes_dev
+DBT_GCP_PROJECT=your-gcp-project-id
+DBT_GCP_DATASET=ingredientes_dev
 USDA_API_KEY=your_usda_key        # free at https://fdc.nal.usda.gov/api-key-signup.html
 GOOGLE_APPLICATION_CREDENTIALS=/path/to/your/keyfile.json
 ```

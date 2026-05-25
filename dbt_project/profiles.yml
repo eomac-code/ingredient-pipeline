@@ -4,8 +4,8 @@ ingredient_pipeline:
     dev:
       type: bigquery
       method: service-account
-      project: "{{ env_var('GCP_PROJECT') }}"
-      schema: "{{ env_var('GCP_DATASET') }}"
+      project: "{{ env_var('DBT_GCP_PROJECT') }}"
+      schema: "{{ env_var('DBT_GCP_DATASET') }}"
       keyfile: "{{ env_var('GOOGLE_APPLICATION_CREDENTIALS') }}"
       threads: 4
       timeout_seconds: 300

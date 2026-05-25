@@ -11,8 +11,6 @@ from tenacity import retry, stop_after_attempt, wait_exponential
 from ingestion.base_client import BaseClient
 from ingestion.config import PUBCHEM_REQUEST_INTERVAL_S as REQUEST_INTERVAL_S, PUBCHEM_BASE_URL
 
-BASE_URL = PUBCHEM_BASE_URL
-
 PROPERTIES = [
     "MolecularFormula",
     "MolecularWeight",

@@ -10,7 +10,6 @@ from tenacity import retry, stop_after_attempt, wait_exponential
 from ingestion.base_client import BaseClient
 from ingestion.config import USDA_BASE_URL
 
-
 NUTRIENT_MAP = {
     "1003": "protein_g",
     "1004": "fat_g",

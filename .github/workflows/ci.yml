@@ -22,22 +22,28 @@ jobs:
           cache: "pip"
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install -r requirements.txt sqlfluff-templater-dbt
+
+      - name: Write GCP keyfile from secret
+        run: |
+          echo '${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}' > /tmp/gcp_keyfile.json
+          echo "GOOGLE_APPLICATION_CREDENTIALS=/tmp/gcp_keyfile.json" >> $GITHUB_ENV
 
       - name: SQLFluff lint
         run: |
           sqlfluff lint dbt_project/models \
-            --dialect duckdb \
+            --dialect bigquery \
             --templater dbt \
-            --rules L001,L002,L003,L010,L014,L016,L019
+            --rules LT01,LT02,LT03,LT04,LT05,LT06,LT07,LT08
         working-directory: .
 
       - name: dbt deps
         run: dbt deps
         working-directory: dbt_project
 
-      - name: dbt compile (no warehouse needed)
+      - name: dbt compile
         run: dbt compile --profiles-dir .
         working-directory: dbt_project
         env:
-          DUCKDB_PATH: "/tmp/ci_test.duckdb"
+          GCP_PROJECT: ${{ vars.GCP_PROJECT }}       
+          GCP_DATASET: ${{ vars.GCP_DATASET }}       

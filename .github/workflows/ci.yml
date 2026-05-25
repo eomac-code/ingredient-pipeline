@@ -25,15 +25,13 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Write GCP keyfile from secret
+        env:
+          GCP_KEYFILE: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
         run: |
-          echo '${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}' > /tmp/gcp_keyfile.json
+          echo "$GCP_KEYFILE" > /tmp/gcp_keyfile.json
           echo "GOOGLE_APPLICATION_CREDENTIALS=/tmp/gcp_keyfile.json" >> $GITHUB_ENV
-
-      - name: Debug env vars
-        run: |
-          echo "GCP_PROJECT=${{ vars.GCP_PROJECT }}"
-          echo "GCP_DATASET=${{ vars.GCP_DATASET }}"
-          echo "GOOGLE_APPLICATION_CREDENTIALS=$GOOGLE_APPLICATION_CREDENTIALS"
+          # verify it's valid JSON
+          python3 -c "import json; json.load(open('/tmp/gcp_keyfile.json')); print('keyfile JSON is valid')"
 
       - name: SQLFluff lint
         working-directory: dbt_project
@@ -48,7 +46,4 @@ jobs:
         env:
           GCP_PROJECT: ${{ vars.GCP_PROJECT }}
           GCP_DATASET: ${{ vars.GCP_DATASET }}
-        run: |
-          echo "GCP_PROJECT=$GCP_PROJECT"
-          echo "GCP_DATASET=$GCP_DATASET"
-          dbt compile --profiles-dir .
+        run: dbt compile --profiles-dir .

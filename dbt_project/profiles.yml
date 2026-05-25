@@ -2,12 +2,11 @@ ingredient_pipeline:
   target: dev
   outputs:
     dev:
-      type: duckdb
-      # No default: relative-path defaults create stray .duckdb files
-      # depending on CWD. Every dbt invocation (DAG or manual) must set
-      # DUCKDB_PATH to an absolute path. The Airflow DAG already does
-      # this; for manual local runs, e.g.:
-      #   DUCKDB_PATH=$(pwd)/data/ingredient.duckdb \
-      #     dbt run --project-dir dbt_project --profiles-dir dbt_project
-      path: "{{ env_var('DUCKDB_PATH') }}"
-      threads: 4
+      type: bigquery
+      method: service-account
+      project: "{{ env_var('GCP_PROJECT') }}"
+      dataset: "{{ env_var('GCP_DATASET') }}"
+      location: EU
+      keyfile: "{{ env_var('GOOGLE_APPLICATION_CREDENTIALS') }}"
+      threads: 4  
+      timeout_seconds: 300

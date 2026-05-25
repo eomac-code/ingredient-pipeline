@@ -10,25 +10,21 @@ x-airflow-common: &airflow-common
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
     AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: 'true'
+    AIRFLOW__SCHEDULER__DAG_DIR_LIST_INTERVAL: 60  
+    AIRFLOW__SCHEDULER__MIN_FILE_PROCESS_INTERVAL: 60
     AIRFLOW__SIMPLE_AUTH_MANAGER__PASSWORDS: "admin:${AIRFLOW_ADMIN_PASSWORD}"
-    # Airflow 3.x: worker uses the Task SDK over HTTP to register task
-    # starts with the api-server. Without this, it tries localhost:8080
-    # inside the worker container and gets ECONNREFUSED before the task
-    # body ever runs (task log stays empty, worker logs show
-    # httpx.ConnectError from airflow/sdk/api/client.py).
     AIRFLOW__CORE__EXECUTION_API_SERVER_URL: http://airflow-webserver:8080/execution/
-    # Shared JWT signing secret for Task SDK auth. Without a fixed value,
-    # every container generates its own at startup, so the worker's
-    # signed token fails verification at the api-server with
-    # "Invalid auth token: Signature verification failed".
     AIRFLOW__API_AUTH__JWT_SECRET: ${AIRFLOW_JWT_SECRET}
-    # Pipeline-level secrets sourced from .env (not Airflow Variables).
+    GCP_PROJECT: ${GCP_PROJECT}
+    GCP_DATASET: ${GCP_DATASET}
+    GOOGLE_APPLICATION_CREDENTIALS: /opt/airflow/secrets/gcp_keyfile.json
     USDA_API_KEY: ${USDA_API_KEY}
   volumes:
     - ./airflow/dags:/opt/airflow/dags
     - ./logs:/opt/airflow/logs
     - ./plugins:/opt/airflow/plugins
-    - .:/opt/airflow/project          # mount full project into container
+    - .:/opt/airflow/project         
+    - ${GOOGLE_APPLICATION_CREDENTIALS}:/opt/airflow/secrets/gcp_keyfile.json:ro
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on: &airflow-common-depends-on
     redis:

@@ -10,4 +10,3 @@ ingredient_pipeline:
       threads: 4
       timeout_seconds: 300
       location: EU
-      schema: "{{ env_var('GCP_DATASET') }}"

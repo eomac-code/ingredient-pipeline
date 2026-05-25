@@ -7,13 +7,14 @@ models:
       USDA nutritional data. One row per compound. Includes Lipinski and
       polarity classifications. FAIR-compliant: each row includes a
       pubchem_url for findability and full provenance timestamps.
-    meta:
-      owner: data-engineering
-      domain: research-innovation
-      fair_findable: true
-      fair_accessible: true
-      fair_interoperable: true
-      fair_reusable: true
+    config:
+      meta:
+        owner: data-engineering
+        domain: research-innovation
+        fair_findable: true
+        fair_accessible: true
+        fair_interoperable: true
+        fair_reusable: true
     columns:
       - name: compound_id
         description: PubChem Compound ID. Primary key.
@@ -40,12 +41,14 @@ models:
         description: Rule of Five classification — drug_like or non_drug_like.
         tests:
           - accepted_values:
-              values: ['drug_like', 'non_drug_like']
+              arguments:
+                values: ['drug_like', 'non_drug_like']  
       - name: polarity_class
         description: Polarity category derived from xlogp.
         tests:
           - accepted_values:
-              values: ['hydrophilic', 'moderate', 'lipophilic', 'unknown']
+              arguments:
+                values: ['hydrophilic', 'moderate', 'lipophilic', 'unknown']
       - name: energy_kcal
         description: Energy per 100g in kcal. Null if no USDA match.
       - name: has_nutrition_data

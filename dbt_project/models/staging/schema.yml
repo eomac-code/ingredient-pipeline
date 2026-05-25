@@ -1,38 +1,6 @@
 version: 2
 
 # ---------------------------------------------------------------------------
-# Sources — raw DuckDB tables loaded by ingestion scripts
-# ---------------------------------------------------------------------------
-sources:
-  - name: raw
-    description: Raw tables loaded directly from PubChem and USDA APIs.
-    schema: ingredients
-    tables:
-      - name: raw_compounds
-        description: Raw compound properties from PubChem PUG REST API.
-        columns:
-          - name: cid
-            description: PubChem Compound ID (primary key).
-            tests:
-              - not_null
-              - unique
-          - name: molecular_weight
-            description: Molecular weight in g/mol.
-            tests:
-              - not_null
-          - name: isomeric_smiles
-            description: SMILES notation encoding the molecular structure.
-
-      - name: raw_nutrition
-        description: Nutrient data from USDA FoodData Central.
-        columns:
-          - name: fdc_id
-            description: USDA FoodData Central ID (primary key).
-            tests:
-              - not_null
-              - unique
-
-# ---------------------------------------------------------------------------
 # Staging models
 # ---------------------------------------------------------------------------
 models:
@@ -53,7 +21,7 @@ models:
       - name: smiles
         description: Isomeric SMILES string. Encodes molecular structure.
       - name: iupac_name
-        description: Systematic IUPAC chemical name, lowercased.
+        description: Systematic IUPAC chemical name.
       - name: xlogp
         description: Computed octanol-water partition coefficient (lipophilicity).
       - name: formal_charge
@@ -70,7 +38,7 @@ models:
           - not_null
           - unique
       - name: food_description
-        description: USDA food item name, lowercased.
+        description: USDA food item name.
         tests:
           - not_null
       - name: energy_kcal

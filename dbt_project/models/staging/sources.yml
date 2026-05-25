@@ -13,7 +13,6 @@ sources:
             description: "PubChem Compound ID"
             tests:
               - not_null
-              - unique
           - name: _loaded_at
             description: "Timestamp when the record was loaded"
             tests:

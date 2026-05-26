@@ -10,19 +10,6 @@ from tenacity import retry, stop_after_attempt, wait_exponential
 from ingestion.base_client import BaseClient
 from ingestion.config import USDA_BASE_URL
 
-NUTRIENT_MAP = {
-    "1003": "protein_g",
-    "1004": "fat_g",
-    "1005": "carbohydrate_g",
-    "1008": "energy_kcal",
-    "2000": "sugars_g",
-    "1079": "fiber_g",
-    "1087": "calcium_mg",
-    "1089": "iron_mg",
-    "1162": "vitamin_c_mg",
-}
-
-
 class USDAClient(BaseClient):
 
     def __init__(self, api_key: str) -> None:

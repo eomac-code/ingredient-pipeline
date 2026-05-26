@@ -26,7 +26,7 @@ class PubChemTransformer:
             "hbond_donor_count":     rec.get("HBondDonorCount"),
             "hbond_acceptor_count":  rec.get("HBondAcceptorCount"),
             "charge":                rec.get("Charge"),
-            "synonyms":              json.dumps(rec.get("synonyms", [])),
+            "synonyms":              rec.get("synonyms", []),
         }
 
     @staticmethod

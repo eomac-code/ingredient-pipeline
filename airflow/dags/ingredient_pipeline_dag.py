@@ -52,7 +52,7 @@ with DAG(
     ingest_pubchem = BashOperator(
         task_id="ingest_pubchem",
         bash_command=(
-            + f"\nset -x\ncd {PROJECT_ROOT} && {PYTHON_BIN} -u run.py --source pubchem"
+            f"\nset -x\ncd {PROJECT_ROOT} && {PYTHON_BIN} -u run.py --source pubchem"
         ),
     )
 
@@ -62,7 +62,7 @@ with DAG(
     ingest_usda = BashOperator(
         task_id="ingest_usda",
         bash_command=(
-            + f"\nset -x\ncd {PROJECT_ROOT} && {PYTHON_BIN} -u run.py --source usda"
+            f"\nset -x\ncd {PROJECT_ROOT} && {PYTHON_BIN} -u run.py --source usda"
         ),
     )
 

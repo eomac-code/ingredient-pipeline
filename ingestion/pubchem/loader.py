@@ -18,7 +18,7 @@ RAW_COMPOUNDS_SCHEMA = [
     bigquery.SchemaField("hbond_donor_count",     "INTEGER"),
     bigquery.SchemaField("hbond_acceptor_count",  "INTEGER"),
     bigquery.SchemaField("charge",                "INTEGER"),
-    bigquery.SchemaField("synonyms",              "STRING"),
+    bigquery.SchemaField("synonyms", "STRING", mode="REPEATED"),
     bigquery.SchemaField("_loaded_at",            "TIMESTAMP"),
 ]
 

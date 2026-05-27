@@ -47,7 +47,7 @@ class PubChemClient(BaseClient):
         """Fetch compound properties for a batch of CIDs."""
         cid_str = ",".join(str(c) for c in cids)
         prop_str = ",".join(PROPERTIES)
-        url = f"{BASE_URL}/compound/cid/{cid_str}/property/{prop_str}/JSON"
+        url = f"{PUBCHEM_BASE_URL}/compound/cid/{cid_str}/property/{prop_str}/JSON"
 
         with httpx.Client(timeout=30, trust_env=False) as client:
             response = client.get(url)
@@ -58,7 +58,7 @@ class PubChemClient(BaseClient):
     @retry(stop=stop_after_attempt(5), wait=wait_exponential(multiplier=1, min=2, max=30))
     def _fetch_synonyms(self, cid: int) -> list[str]:
         """Fetch top 5 synonyms for a single CID."""
-        url = f"{BASE_URL}/compound/cid/{cid}/synonyms/JSON"
+        url = f"{PUBCHEM_BASE_URL}/compound/cid/{cid}/synonyms/JSON"
 
         with httpx.Client(timeout=30, trust_env=False) as client:
             response = client.get(url)
